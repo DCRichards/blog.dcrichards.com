@@ -1,0 +1,10 @@
+baseURL = "https://blog.dcrichards.com"
+languageCode = "en-gb"
+title = "DCRichards/blog"
+theme = "default"
+[markup]
+  [markup.highlight]
+    style = "algol"
+    [markup.goldmark]
+      [markup.goldmark.extensions]
+        footnote = true

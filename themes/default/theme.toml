@@ -1,0 +1,8 @@
+name = "default"
+description = "blog.dcrichards.com"
+homepage = "https://dcrichards.com"
+tags = ["dcrichards"]
+
+[author]
+  name = "DCRichards"
+  homepage = "https://dcrichards.com"
