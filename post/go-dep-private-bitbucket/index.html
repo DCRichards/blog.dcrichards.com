@@ -3,41 +3,41 @@ Important: Another big gotcha here is dep will also fail if there is not a known
 </code></pre></div><p>In the most simple case, copy your key pair to <code>~/.ssh</code> and run <code>ssh-add</code> . Remember to give them a different name so you don’t overwrite any existing keys.</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>cp id_rsa_mylib ~/.ssh
 cp id_rsa_mylib.pub ~/.ssh
 ssh-add ~/.ssh/id_rsa_mylib
-</code></pre></div><p>If you’re using Docker, this is also pretty simple to achieve. Depending on the Docker image you’re using, you may need to install <code>git</code> and <code>openssh</code> via <code>apt-get install</code> or <code>apk add</code>. You’ll also need to make sure the SSH agent is running, using <code>eval "$(ssh-agent)"</code> will fix this if it isn’t.</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-docker data-lang=docker><span style=font-weight:700;text-decoration:underline>FROM</span><span style=color:#666;font-style:italic> golang:1.9</span><span>
-</span><span></span><span>
-</span><span></span><span style=color:#888;font-style:italic># (other stuff omitted for brevity)</span><span>
-</span><span></span><span>
-</span><span></span><span style=color:#888;font-style:italic># Add your keys to the container</span><span>
-</span><span></span><span style=font-weight:700;text-decoration:underline>COPY</span> ssh /root/.ssh<span>
-</span><span></span><span style=color:#888;font-style:italic># Start the SSH Agent, add the SSH Key and then ensure our dependencies</span><span>
-</span><span></span><span style=font-weight:700;text-decoration:underline>RUN</span> <span style=font-weight:700;font-style:italic>eval</span> <span style=color:#666;font-style:italic>&#34;</span><span style=font-weight:700;text-decoration:underline>$(</span>ssh-agent<span style=font-weight:700;text-decoration:underline>)</span><span style=color:#666;font-style:italic>&#34;</span> &amp;&amp; ssh-add /root/.ssh/id_rsa &amp;&amp; dep ensure<span>
-</span></code></pre></div><p>For making life easier in development, you might also want to create a <code>docker-entrypoint.sh</code> which ensures the SSH agent is running and the key is added each time. This can then be added to the Dockerfile with the <a href=https://docs.docker.com/engine/reference/builder/#entrypoint>ENTRYPOINT</a> command.</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#888;font-weight:700>#!/bin/sh
-</span><span style=color:#888;font-weight:700></span><span style=font-weight:700;font-style:italic>set</span> -e
+</code></pre></div><p>If you’re using Docker, this is also pretty simple to achieve. Depending on the Docker image you’re using, you may need to install <code>git</code> and <code>openssh</code> via <code>apt-get install</code> or <code>apk add</code>. You’ll also need to make sure the SSH agent is running, using <code>eval "$(ssh-agent)"</code> will fix this if it isn’t.</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-docker data-lang=docker><span style=color:#000;font-weight:700>FROM</span><span style=color:#d14> golang:1.9</span><span style=color:#a61717;background-color:#e3d2d2>
+</span><span style=color:#a61717;background-color:#e3d2d2></span><span style=color:#a61717;background-color:#e3d2d2>
+</span><span style=color:#a61717;background-color:#e3d2d2></span><span style=color:#998;font-style:italic># (other stuff omitted for brevity)</span><span style=color:#a61717;background-color:#e3d2d2>
+</span><span style=color:#a61717;background-color:#e3d2d2></span><span style=color:#a61717;background-color:#e3d2d2>
+</span><span style=color:#a61717;background-color:#e3d2d2></span><span style=color:#998;font-style:italic># Add your keys to the container</span><span style=color:#a61717;background-color:#e3d2d2>
+</span><span style=color:#a61717;background-color:#e3d2d2></span><span style=color:#000;font-weight:700>COPY</span> ssh /root/.ssh<span style=color:#a61717;background-color:#e3d2d2>
+</span><span style=color:#a61717;background-color:#e3d2d2></span><span style=color:#998;font-style:italic># Start the SSH Agent, add the SSH Key and then ensure our dependencies</span><span style=color:#a61717;background-color:#e3d2d2>
+</span><span style=color:#a61717;background-color:#e3d2d2></span><span style=color:#000;font-weight:700>RUN</span> <span style=color:#0086b3>eval</span> <span style=color:#d14>&#34;</span><span style=color:#000;font-weight:700>$(</span>ssh-agent<span style=color:#000;font-weight:700>)</span><span style=color:#d14>&#34;</span> <span style=color:#000;font-weight:700>&amp;&amp;</span> ssh-add /root/.ssh/id_rsa <span style=color:#000;font-weight:700>&amp;&amp;</span> dep ensure<span style=color:#a61717;background-color:#e3d2d2>
+</span></code></pre></div><p>For making life easier in development, you might also want to create a <code>docker-entrypoint.sh</code> which ensures the SSH agent is running and the key is added each time. This can then be added to the Dockerfile with the <a href=https://docs.docker.com/engine/reference/builder/#entrypoint>ENTRYPOINT</a> command.</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#999;font-weight:700;font-style:italic>#!/bin/sh
+</span><span style=color:#999;font-weight:700;font-style:italic></span><span style=color:#0086b3>set</span> -e
 
-<span style=font-weight:700;font-style:italic>eval</span> <span style=color:#666;font-style:italic>&#34;</span><span style=font-weight:700;text-decoration:underline>$(</span>ssh-agent<span style=font-weight:700;text-decoration:underline>)</span><span style=color:#666;font-style:italic>&#34;</span>
+<span style=color:#0086b3>eval</span> <span style=color:#d14>&#34;</span><span style=color:#000;font-weight:700>$(</span>ssh-agent<span style=color:#000;font-weight:700>)</span><span style=color:#d14>&#34;</span>
 ssh-add /root/.ssh/id_rsa
 
-<span style=font-weight:700;font-style:italic>exec</span> <span style=color:#666;font-style:italic>&#34;</span><span style=color:#666;font-weight:700;font-style:italic>$@</span><span style=color:#666;font-style:italic>&#34;</span>
-</code></pre></div><p>CI varies depending on your chosen platform, but shouldn’t be too dissimilar. I’m using <a href=https://drone.io/>Drone CI</a>, so the following is an example of the <code>.drone.yml</code> file.</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml>pipeline:
-  test:
-    image: golang:1.9-alpine
-    pull: <span style=font-weight:700;text-decoration:underline>true</span>
-    commands:
-      - apk --update add git openssh
-      - go get -u github.com/golang/dep/cmd/dep
-      - cp -R ssh /root/.ssh
-      <span style=color:#888;font-style:italic># We need this or we&#39;ll be warned about our private key security.</span>
-      - chmod 0400 /root/.ssh/id_rsa
-      - eval <span style=color:#666;font-style:italic>&#34;$(ssh-agent)&#34;</span>
-      - ssh-add /root/.ssh/id_rsa
-      - cp -R src/app /go/src
-      - cd /go/src/app
-      - dep status -old
-      - go test
-    when:
-      event: push
-</code></pre></div><p>There we have it. Your keys are accessible and dep should run like a dream.</p><p><em>Protip: If you’re still stuck debugging, a good start is to make sure you running dep with the <code>-v</code> flag to enable verbose (although still quite terse to be quite honest) logging, which might give a little more insight.</em></p><h2 id=notes>Notes</h2><p>Some of you may be aware that GitHub allows repository cloning with an <a href=https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/>access token</a> using the following pattern:</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>https://username:{access_token}@github.com/user/repo.git
-</code></pre></div><p>Bitbucket also offers a <a href=https://developer.atlassian.com/bitbucket/api/2/reference/meta/authentication#repo-clone>similar version</a> of this for <a href=https://confluence.atlassian.com/bitbucketserver/personal-access-tokens-939515499.html>personal access tokens</a> using the following:</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>https://x-token-auth:{access_token}@bitbucket.org/user/repo.git
+<span style=color:#0086b3>exec</span> <span style=color:#d14>&#34;</span><span style=color:teal>$@</span><span style=color:#d14>&#34;</span>
+</code></pre></div><p>CI varies depending on your chosen platform, but shouldn’t be too dissimilar. I’m using <a href=https://drone.io/>Drone CI</a>, so the following is an example of the <code>.drone.yml</code> file.</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml>pipeline:<span style=color:#bbb>
+</span><span style=color:#bbb>  </span>test:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span>image:<span style=color:#bbb> </span>golang:<span style=color:#099>1.9</span>-alpine<span style=color:#bbb>
+</span><span style=color:#bbb>    </span>pull:<span style=color:#bbb> </span><span style=color:#000;font-weight:700>true</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span>commands:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span>-<span style=color:#bbb> </span>apk<span style=color:#bbb> </span>--update<span style=color:#bbb> </span>add<span style=color:#bbb> </span>git<span style=color:#bbb> </span>openssh<span style=color:#bbb>
+</span><span style=color:#bbb>      </span>-<span style=color:#bbb> </span>go<span style=color:#bbb> </span>get<span style=color:#bbb> </span>-u<span style=color:#bbb> </span>github.com/golang/dep/cmd/dep<span style=color:#bbb>
+</span><span style=color:#bbb>      </span>-<span style=color:#bbb> </span>cp<span style=color:#bbb> </span>-R<span style=color:#bbb> </span>ssh<span style=color:#bbb> </span>/root/.ssh<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#998;font-style:italic># We need this or we&#39;ll be warned about our private key security.</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span>-<span style=color:#bbb> </span>chmod<span style=color:#bbb> </span><span style=color:#099>0400</span><span style=color:#bbb> </span>/root/.ssh/id_rsa<span style=color:#bbb>
+</span><span style=color:#bbb>      </span>-<span style=color:#bbb> </span>eval<span style=color:#bbb> </span><span style=color:#d14>&#34;$(ssh-agent)&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span>-<span style=color:#bbb> </span>ssh-add<span style=color:#bbb> </span>/root/.ssh/id_rsa<span style=color:#bbb>
+</span><span style=color:#bbb>      </span>-<span style=color:#bbb> </span>cp<span style=color:#bbb> </span>-R<span style=color:#bbb> </span>src/app<span style=color:#bbb> </span>/go/src<span style=color:#bbb>
+</span><span style=color:#bbb>      </span>-<span style=color:#bbb> </span>cd<span style=color:#bbb> </span>/go/src/app<span style=color:#bbb>
+</span><span style=color:#bbb>      </span>-<span style=color:#bbb> </span>dep<span style=color:#bbb> </span>status<span style=color:#bbb> </span>-old<span style=color:#bbb>
+</span><span style=color:#bbb>      </span>-<span style=color:#bbb> </span>go<span style=color:#bbb> </span>test<span style=color:#bbb>
+</span><span style=color:#bbb>    </span>when:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span>event:<span style=color:#bbb> </span>push<span style=color:#bbb>
+</span></code></pre></div><p>There we have it. Your keys are accessible and dep should run like a dream.</p><p><em>Protip: If you’re still stuck debugging, a good start is to make sure you running dep with the <code>-v</code> flag to enable verbose (although still quite terse to be quite honest) logging, which might give a little more insight.</em></p><h2 id=notes>Notes</h2><p>Some of you may be aware that GitHub allows repository cloning with an <a href=https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/>access token</a> using the following pattern:</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>https://username:<span style=color:#000;font-weight:700>{</span>access_token<span style=color:#000;font-weight:700>}</span>@github.com/user/repo.git
+</code></pre></div><p>Bitbucket also offers a <a href=https://developer.atlassian.com/bitbucket/api/2/reference/meta/authentication#repo-clone>similar version</a> of this for <a href=https://confluence.atlassian.com/bitbucketserver/personal-access-tokens-939515499.html>personal access tokens</a> using the following:</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>https://x-token-auth:<span style=color:#000;font-weight:700>{</span>access_token<span style=color:#000;font-weight:700>}</span>@bitbucket.org/user/repo.git
 </code></pre></div><p>This has not been tested with dep, but adding this to the <code>[[constraint]]</code> in your <code>Gopkg.toml</code> should also work too. The downside here of course is you’ll need an access token tied to a specific user, which may or may not be what you want.</p><h2 id=references>References</h2><section class=footnotes role=doc-endnotes><hr><ol><li id=fn:1 role=doc-endnote><p>Thanks to <strong>zkry</strong> on GitHub for pointing this out in <a href=https://github.com/golang/dep/issues/1476#issuecomment-353652029>this discussion</a>. <a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li></ol></section><div class=blog-tags><a href=http://blog.dcrichards.comtags/golang/>golang</a>&nbsp;
 <a href=http://blog.dcrichards.comtags/dep/>dep</a>&nbsp;
 <a href=http://blog.dcrichards.comtags/bitbucket/>bitbucket</a>&nbsp;</div></article></div><footer><div class=container></div></footer></body><script src=https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js></script><script>feather.replace();</script></html>
