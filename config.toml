@@ -4,7 +4,7 @@ title = "DCRichards/blog"
 theme = "default"
 [markup]
   [markup.highlight]
-    style = "algol"
+    style = "github"
     [markup.goldmark]
       [markup.goldmark.extensions]
         footnote = true
