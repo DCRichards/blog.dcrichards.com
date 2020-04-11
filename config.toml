@@ -1,4 +1,4 @@
-baseURL = "http://dcrichards.github.io/blog.dcrichards.com"
+baseURL = "blog.dcrichards.com"
 languageCode = "en-gb"
 title = "DCRichards/blog"
 theme = "default"
