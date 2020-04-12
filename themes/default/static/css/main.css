@@ -83,13 +83,20 @@ a {
 .nav-links {
   margin: 0;
   padding: 0;
-  font-size: 14px;
   list-style: none;
 }
 
 .nav-links li {
   display: inline-block;
   margin: 0 0 0 10px;
+}
+
+.nav-links li a {
+  border: none;
+}
+
+.nav-links li:hover {
+  border-bottom: 1px solid #24252f;
 }
 
 .nav-links li a i {
@@ -99,10 +106,6 @@ a {
 .intro-header {
   margin: 40px 0 20px;
   position: relative;
-}
-
-.tags-heading h1:before {
-  content: "#";
 }
 
 .post-heading h1 {
@@ -124,7 +127,13 @@ a {
 .intro-header .archives-heading h1 {
   margin-top: 0;
   padding-top: 0;
-  font-size: 45px;
+  font-size: 42px;
+}
+
+.tags-heading svg.feather {
+  margin-right: 5px;
+  width: 32px;
+  height: 32px;
 }
 
 .intro-header .post-heading h1 {
@@ -172,8 +181,8 @@ p + p {
 }
 
 .post-preview {
-  padding-bottom: 10px;
-  border-bottom: 1px solid #24252f;
+  padding-bottom: 2rem;
+  border-bottom: 2px solid #24252f;
 }
 
 .post-preview a {
@@ -195,20 +204,22 @@ p + p {
 
 .blog-tags {
   font-size: 18px;
-  font-weight: bold;
-  margin: 1.5rem 0;
+  margin-top: 3rem;
 }
 
 .blog-tags a {
-  color: #24252f;
-  text-decoration: none;
+  align-items: center;
   border-bottom: none;
-  padding: 0px 5px;
+  color: #24252f;
+  display: inline-flex;
+  text-decoration: none;
+  margin: 0 .5rem;
 }
 
-.blog-tags a:before {
-  content: "#";
+.blog-tags a svg {
+  margin-right: 5px;
 }
+
 
 h4.term-name > span.badge {
     float: right;
@@ -404,10 +415,6 @@ footer {
     font-size: 16px;
     line-height: 1.8;
     margin: 40px auto;
-  }
-
-  .blog-tags {
-    margin-top: 1.5rem;
   }
 
   .pager li a {

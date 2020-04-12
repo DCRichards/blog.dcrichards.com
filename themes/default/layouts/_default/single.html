@@ -5,7 +5,9 @@
       {{ if .Params.tags }}
         <div class="blog-tags">
           {{ range .Params.tags }}
-            <a href="{{ $.Site.BaseURL }}tags/{{ . | urlize }}/">{{ . }}</a>&nbsp;
+            <a href="{{ $.Site.BaseURL }}tags/{{ . | urlize }}/">
+              <i data-feather="tag"></i>{{ . }}
+            </a>
           {{ end }}
         </div>
       {{ end }}

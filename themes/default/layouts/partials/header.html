@@ -17,6 +17,8 @@
         <div class="{{ .Type }}-heading">
           {{ if eq .Type "list" }}
             <h1>{{ if .Data.Singular }}#{{ end }}{{ .Title }}</h1>
+          {{ else if eq .Type "tags" }}
+            <h1><i data-feather="tag"></i>{{ with $title }}{{.}}{{ else }}<br/>{{ end }}</h1>
           {{ else }}
             <h1>{{ with $title }}{{.}}{{ else }}<br/>{{ end }}</h1>
           {{ end }}

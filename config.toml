@@ -1,6 +1,6 @@
 baseURL = "https://blog.dcrichards.com/"
 languageCode = "en-gb"
-title = "DCRichards/blog"
+title = "DCRichards / blog"
 theme = "default"
 [markup]
   [markup.highlight]
